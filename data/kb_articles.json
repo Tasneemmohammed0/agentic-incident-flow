@@ -1,0 +1,25 @@
+{
+  "description": "The only knowledge source your Gemini prompt should use. Put these articles into the prompt and instruct the model to answer only from them.",
+  "articles": [
+    {
+      "id": 1,
+      "text": "Printer not printing: Restart the printer and unplug the cable for 30 seconds."
+    },
+    {
+      "id": 2,
+      "text": "Email not sending: Check SMTP settings and ensure port 587 is open."
+    },
+    {
+      "id": 3,
+      "text": "Cannot access system: Reset password via the 'Forgot Password' page."
+    },
+    {
+      "id": 4,
+      "text": "Slow network: Restart the router and check cable connections."
+    },
+    {
+      "id": 5,
+      "text": "Browser pages not loading: Clear cache and try incognito mode."
+    }
+  ]
+}

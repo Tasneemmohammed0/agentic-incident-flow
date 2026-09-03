@@ -1,0 +1,23 @@
+{
+  "description": "Create these three incidents on your PDI. Your flow must produce the expected decision for each one.",
+  "incidents": [
+    {
+      "short_description": "Printer not printing after office move",
+      "description": "It was working yesterday. I tried turning it off and on.",
+      "expected_decision": "respond",
+      "why": "Knowledge-base article 1 clearly covers this problem."
+    },
+    {
+      "short_description": "Cannot send email",
+      "description": "It just doesn't work.",
+      "expected_decision": "ask",
+      "why": "Article 2 might apply, but the report is too vague to be sure — the agent should ask for more detail."
+    },
+    {
+      "short_description": "Request: annual leave approval",
+      "description": "I would like to take next week off.",
+      "expected_decision": "escalate",
+      "why": "No knowledge-base article covers this — it must go to a human."
+    }
+  ]
+}
