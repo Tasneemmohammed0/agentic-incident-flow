@@ -9,3 +9,8 @@ app = FastAPI(
 @app.get("/")
 async def root():
     return {"message": "Agentic Incident Flow API is running!"}
+
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
