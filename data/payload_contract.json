@@ -1,0 +1,17 @@
+{
+  "description": "The exact JSON your Business Rule sends to POST /webhook. Field names must match exactly.",
+  "fields": {
+    "incident_sys_id": "string — the sys_id of the incident record (used for the write-back)",
+    "number": "string — the incident number, e.g. INC0010001",
+    "short_description": "string — one-line summary typed by the user",
+    "description": "string — longer detail, may be empty",
+    "priority": "integer — 1 (highest) to 5 (lowest)"
+  },
+  "example": {
+    "incident_sys_id": "1c741bd70b2322007518478d83673af3",
+    "number": "INC0010001",
+    "short_description": "Printer not printing after office move",
+    "description": "It was working yesterday. I tried turning it off and on.",
+    "priority": 3
+  }
+}
