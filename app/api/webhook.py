@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 @router.post("/webhook", status_code=status.HTTP_202_ACCEPTED)
 async def webhook_handler(payload: IncidentPayload):
     claimed = await identempotency_store.claim(payload.incident_sys_id)
-    
+
     logger.info(
         "Webhook received for incident %s (number: %s, priority: %d)",
         payload.incident_sys_id,
@@ -23,7 +23,6 @@ async def webhook_handler(payload: IncidentPayload):
 
     if not claimed:
         return {
-            status: status.HTTP_409_CONFLICT,
             "message": "Duplicate webhook received",
         }
     return {"message": "Webhook received", "payload": payload}

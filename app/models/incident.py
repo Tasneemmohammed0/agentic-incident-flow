@@ -9,5 +9,5 @@ class IncidentPayload(BaseModel):
     short_description: str = Field(
         min_length=1, description="The short description of the incident"
     )
-    description: str = ""
+    description: str | None = None
     priority: int = Field(ge=1, le=5, description="The priority of the incident (1-5)")
