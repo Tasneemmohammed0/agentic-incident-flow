@@ -9,6 +9,13 @@ dependencies = [
     "google-genai>=2.22.0",
     "httpx>=0.28.1",
     "pydantic-settings>=2.15.0",
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
     "python-dotenv>=1.2.3",
     "uvicorn>=0.52.4",
 ]
+
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
