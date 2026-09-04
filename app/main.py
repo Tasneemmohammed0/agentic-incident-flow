@@ -6,7 +6,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-app.include_router(webhook_router, prefix="/api")
+app.include_router(webhook_router, tags=["webhook"])
 
 
 @app.get("/")

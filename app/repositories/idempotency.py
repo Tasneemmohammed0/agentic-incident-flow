@@ -32,3 +32,6 @@ class IdempotencyStore:
     async def status(self, incident_id: str) -> ProcessingStatus | None:
         async with self._lock:
             return self._states.get(incident_id)
+
+
+identempotency_store = IdempotencyStore()
