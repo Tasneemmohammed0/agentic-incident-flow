@@ -1,4 +1,5 @@
 from app.models.incident import IncidentPayload
+from app.models.knowledge_base import KnowledgeBase
 
 """
 Exact prompt template used by the Gemini decision step.
@@ -72,12 +73,20 @@ Do not include markdown, explanations, or additional fields.
 """
 
 
+def _kb_articles_to_text(kb_data: KnowledgeBase) -> str:
+    """Flattens the KB JSON into plain text for the prompt."""
+    lines = []
+    for article in kb_data.articles:
+        lines.append(f"[{article.id}] {article.title}\n{article.body}")
+    return "\n\n".join(lines)
+
+
 def build_prompt(
-    kb_articles_text: str,
+    kb_data: KnowledgeBase,
     incident: IncidentPayload,
 ) -> str:
     return DECISION_PROMPT_TEMPLATE.format(
-        kb_articles=kb_articles_text,
+        kb_articles=_kb_articles_to_text(kb_data),
         number=incident.number,
         priority=incident.priority,
         short_description=incident.short_description,

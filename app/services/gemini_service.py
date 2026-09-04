@@ -23,7 +23,7 @@ class GeminiService:
         self._model = model
         self._client = genai.Client(api_key=api_key)
 
-    def decide(
+    async def decide(
         self, kb_data: KnowledgeBase, incident: IncidentPayload
     ) -> DecisionPayload:
         """
@@ -34,8 +34,7 @@ class GeminiService:
         Returns:
             DecisionPayload: The decision made by the Gemini model.
         """
-        kb_articles_text = self._kb_articles_to_text(kb_data)
-        prompt = build_prompt(kb_articles_text, incident)
+        prompt = build_prompt(kb_data, incident)
         logger.debug(
             "Sending incident %s to Gemini (%s)",
             incident.number,
@@ -43,7 +42,7 @@ class GeminiService:
         )
 
         try:
-            response = self._client.models.generate_content(
+            response = await self._client.models.generate_content(
                 model=self._model,
                 contents=prompt,
                 config=types.GenerateContentConfig(
@@ -52,6 +51,17 @@ class GeminiService:
                     response_schema=DecisionPayload,
                 ),
             )
+
+            if not response.text:
+                logger.warning(
+                    "Gemini returned empty response for incident %s",
+                    incident.number,
+                )
+                return DecisionPayload(
+                    decision="escalate",
+                    message="The incident requires manual review because automated triage was unavailable.",
+                )
+
             parsed = DecisionPayload.model_validate_json(response.text)
 
         except Exception as exc:
@@ -66,11 +76,3 @@ class GeminiService:
             )
 
         return parsed
-
-    @staticmethod
-    def _kb_articles_to_text(kb_data: KnowledgeBase) -> str:
-        """Flattens the KB JSON into plain text for the prompt."""
-        lines = []
-        for article in kb_data.articles:
-            lines.append(f"[{article.id}] {article.title}\n{article.body}")
-        return "\n\n".join(lines)
