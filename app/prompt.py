@@ -1,3 +1,5 @@
+from app.models.incident import IncidentPayload
+
 """
 Exact prompt template used by the Gemini decision step.
 
@@ -72,15 +74,12 @@ Do not include markdown, explanations, or additional fields.
 
 def build_prompt(
     kb_articles_text: str,
-    number: str,
-    priority: str,
-    short_description: str,
-    description: str,
+    incident: IncidentPayload,
 ) -> str:
     return DECISION_PROMPT_TEMPLATE.format(
         kb_articles=kb_articles_text,
-        number=number,
-        priority=priority,
-        short_description=short_description,
-        description=description,
+        number=incident.number,
+        priority=incident.priority,
+        short_description=incident.short_description,
+        description=incident.description,
     )
