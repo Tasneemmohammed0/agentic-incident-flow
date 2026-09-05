@@ -11,6 +11,8 @@ Built for the Sprints × BARQ Systems AI Engineering Internship.
 3. **This service asks Gemini for a decision** (`respond`, `ask`, or `escalate`) using only the five knowledge-base articles it's given. Gemini never gets to use outside knowledge.
 4. **This service writes the decision back** onto the same ticket via the ServiceNow REST API.
 
+🎥 **[Watch the demo video](https://drive.google.com/file/d/1chA5PptvnPZIS1iiiqPXpwKk3rzk8doB/view?usp=sharing)**
+
 ```
 ServiceNow PDI ──(Business Rule)──▶ POST /webhook ──▶ Gemini ──▶ ServiceNow REST API ──▶ same ticket, updated
 ```
