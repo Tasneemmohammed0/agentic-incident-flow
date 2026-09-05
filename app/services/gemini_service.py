@@ -53,7 +53,7 @@ class GeminiService:
             )
 
             # Todo: remove this before meging to main
-            logger.info("Raw Gemini response:\n%s", response.text)
+            logger.debug("Raw Gemini response:\n%s", response.text)
 
             if not response.text:
                 logger.warning(
