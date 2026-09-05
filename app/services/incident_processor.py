@@ -33,7 +33,9 @@ class IncidentProcessor:
                 "Decision for incident %s: %s", incident.number, result.decision
             )
 
-            # ToDo: Update the incident in ServiceNow based on the decision
+            await self._service_now_service.write_back(
+                incident.incident_sys_id, result.decision, result.message
+            )
 
             await self._idempotency_store.complete(incident.incident_sys_id)
             logger.info(
