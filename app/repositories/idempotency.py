@@ -34,4 +34,4 @@ class IdempotencyStore:
             return self._states.get(incident_id)
 
 
-identempotency_store = IdempotencyStore()
+idempotency_store = IdempotencyStore()

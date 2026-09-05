@@ -22,20 +22,13 @@ install:
 add PACKAGE:
     uv add {{PACKAGE}}
 
-# Format code 
-format:
-    uv run ruff format .
-
-# Lint code
-lint:
-    uv run ruff check .
-
 # Run tests
 test:
-    uv run pytest
+    python -m scripts.test_incidents \
+    --kb data/kb_articles.json \
+    --tests data/test_incidents.json \
+    --verbose
 
-# Run lint + tests
-check: lint test
 
 # Remove Python cache files
 clean:

@@ -37,8 +37,11 @@ async def validation_exception_handler(
 ) -> JSONResponse:
     body = await request.body()
 
-    print("VALIDATION ERROR:", exc.errors())
-    print("RAW BODY:", body.decode("utf-8", errors="replace"))
+    logger.warning(
+        "Validation error on incoming webhook: %s | raw body: %s",
+        exc.errors(),
+        body.decode("utf-8", errors="replace"),
+    )
 
     return JSONResponse(
         status_code=422,
