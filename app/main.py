@@ -37,8 +37,8 @@ async def validation_exception_handler(
 ) -> JSONResponse:
     body = await request.body()
 
-    print("VALIDATION ERROR:", exc.errors())
-    print("RAW BODY:", body.decode("utf-8", errors="replace"))
+    logger.error("VALIDATION ERROR: %s", exc.errors())
+    logger.info("RAW BODY: %s", body.decode("utf-8", errors="replace"))
 
     return JSONResponse(
         status_code=422,
