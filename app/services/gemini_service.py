@@ -42,7 +42,7 @@ class GeminiService:
         )
 
         try:
-            response = await self._client.models.generate_content(
+            response = self._client.models.generate_content(
                 model=self._model,
                 contents=prompt,
                 config=types.GenerateContentConfig(
@@ -51,6 +51,9 @@ class GeminiService:
                     response_schema=IncidentDecision,
                 ),
             )
+
+            # Todo: remove this before meging to main
+            logger.info("Raw Gemini response:\n%s", response.text)
 
             if not response.text:
                 logger.warning(

@@ -1,24 +1,10 @@
 from app.models.incident import IncidentPayload
 from app.models.knowledge_base import KnowledgeBase
 
-"""
-Exact prompt template used by the Gemini decision step.
+DECISION_PROMPT_TEMPLATE = """You are an IT support triage assistant.
 
-Keep this file committed. Any changes to the decision behavior should
-be made here rather than embedding the prompt inside the Gemini client.
-"""
-
-DECISION_PROMPT_TEMPLATE = """You are an IT support triage assistant for a service desk.
-
-You must make your decision using ONLY the knowledge articles provided below.
-The knowledge articles are your complete and exclusive source of truth.
-
-Do NOT:
-- use outside knowledge
-- invent troubleshooting steps
-- assume facts that are not present in the ticket
-- invent policies, procedures, or solutions
-- use information from articles that is unrelated to the ticket
+Use ONLY the knowledge articles provided below. Do not use outside
+knowledge, invent facts, or invent troubleshooting steps.
 
 KNOWLEDGE ARTICLES:
 {kb_articles}
@@ -29,56 +15,56 @@ Priority: {priority}
 Short description: {short_description}
 Description: {description}
 
-Choose EXACTLY ONE action:
+Choose exactly ONE decision:
 
 1. "respond"
-Choose "respond" ONLY when a supplied knowledge article clearly and
-sufficiently provides a solution to the reported issue.
+   Use only when the ticket contains enough information to confidently
+   apply a knowledge article's solution to the reported problem.
 
-The message must:
-- provide only steps supported by the relevant article
-- be concise and actionable
-- not add information that is absent from the article
+   The article must clearly match the problem AND the ticket must provide
+   enough detail to justify giving the article's troubleshooting steps.
 
 2. "ask"
-Choose "ask" when a supplied knowledge article appears relevant to the
-issue, but the ticket does not contain enough information to determine
-whether or how the article's solution applies.
+   Use when a knowledge article may apply, but the ticket is too vague
+   to confidently determine that its solution applies.
 
-The message must:
-- contain ONE short, specific clarifying question
-- ask only for information needed to determine the appropriate solution
-- not provide an invented solution
+   Ask ONE short, specific clarifying question.
+   Do not provide troubleshooting steps.
 
 3. "escalate"
-Choose "escalate" when:
-- none of the supplied knowledge articles addresses the issue, OR
-- the request is outside the scope of the supplied technical knowledge,
-  such as HR, leave, or other non-technical requests.
+   Use when no knowledge article applies or the request is outside the
+   provided technical knowledge.
 
-The message must:
-- contain ONE short sentence explaining why the issue requires escalation
-- not suggest a solution that is not supported by the supplied articles
+Give ONE short sentence explaining why it must be escalated.
 
-DECISION RULES:
-- Prefer "respond" only when the supplied articles fully support the solution.
-- Prefer "ask" when an applicable article exists but important ticket
-  information is missing or ambiguous.
-- Use "escalate" when no supplied article is applicable.
-- When uncertain between "respond" and "ask", choose "ask".
-- Never invent information or use knowledge outside the supplied articles.
+IMPORTANT RULES:
 
-Return ONLY the structured JSON response.
-Do not include markdown, explanations, or additional fields.
+IMPORTANT:
+
+* Do not treat a general symptom as sufficient evidence for "respond".
+* Do not assume missing technical details.
+* If the ticket is vague and an article only generally matches the symptom,
+  choose "ask".
+* "respond" requires enough information to justify the article's solution.
+* "ask" is preferred when there is a plausible article match but important
+  information is missing.
+* For "ask", ask exactly ONE clarifying question and do not provide a solution.
+
+Return ONLY valid JSON with exactly these two fields:
+
+{{
+"decision": "respond | ask | escalate",
+"message": "short message"
+}}
+
+Do not include markdown, explanations, reasoning, or additional fields.
 """
 
 
 def _kb_articles_to_text(kb_data: KnowledgeBase) -> str:
-    """Flattens the KB JSON into plain text for the prompt."""
-    lines = []
-    for article in kb_data.articles:
-        lines.append(f"[{article.id}] {article.title}\n{article.body}")
-    return "\n\n".join(lines)
+    return "\n\n".join(
+        f"Article {article.id}: {article.text}" for article in kb_data.articles
+    )
 
 
 def build_prompt(

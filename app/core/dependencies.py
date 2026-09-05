@@ -1,8 +1,9 @@
+import json
 from pathlib import Path
 from functools import lru_cache
 
 from app.core.config import get_settings
-from app.models.knowledge_base import KnowledgeBase
+from app.models.knowledge_base import KBArticle, KnowledgeBase
 from app.repositories.idempotency import idempotency_store
 from app.services.gemini_service import GeminiService
 from app.services.incident_processor import IncidentProcessor
@@ -10,8 +11,10 @@ from app.services.servicenow_service import ServiceNowService
 
 
 def load_kb_data() -> KnowledgeBase:
-    kb_path = Path(__file__).parent.parent / "data" / "kb_articles.json"
-    return KnowledgeBase.model_validate_json(kb_path.read_text(encoding="utf-8"))
+    kb_path = Path(__file__).resolve().parents[2] / "data" / "kb_articles.json"
+    data = json.loads(kb_path.read_text(encoding="utf-8"))
+
+    return KnowledgeBase.model_validate(data)
 
 
 @lru_cache

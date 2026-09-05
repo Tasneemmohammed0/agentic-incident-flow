@@ -1,14 +1,10 @@
-import json
 import logging
 
-from pathlib import Path
 from app.repositories.idempotency import IdempotencyStore
 from app.services.gemini_service import GeminiService
 from app.services.servicenow_service import ServiceNowService
 from app.models.knowledge_base import KnowledgeBase
 from app.models.incident import IncidentPayload
-from app.repositories.idempotency import idempotency_store
-from app.core.config import get_settings
 
 logger = logging.getLogger(__name__)
 

@@ -26,8 +26,9 @@ async def webhook_handler(
         }
 
     logger.info(
-        "Webhook received for incident %s (number: %s, priority: %d)",
+        "Webhook received for incident %s, description: %s query: (number: %s, priority: %d)",
         payload.incident_sys_id,
+        payload.short_description,
         payload.number,
         payload.priority,
     )
