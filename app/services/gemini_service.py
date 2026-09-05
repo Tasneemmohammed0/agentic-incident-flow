@@ -7,7 +7,7 @@ from google import genai
 from app.models.knowledge_base import KnowledgeBase
 from app.prompt import build_prompt
 from app.models.incident import IncidentPayload
-from app.models.decision import DecisionPayload
+from app.models.decision import IncidentDecision
 
 logger = logging.getLogger(__name__)
 
@@ -25,14 +25,14 @@ class GeminiService:
 
     async def decide(
         self, kb_data: KnowledgeBase, incident: IncidentPayload
-    ) -> DecisionPayload:
+    ) -> IncidentDecision:
         """
         Args:
             kb_data: Knowledge base data to provide context for the decision.
             incident: Incident data to provide context for the decision.
 
         Returns:
-            DecisionPayload: The decision made by the Gemini model.
+            IncidentDecision: The decision made by the Gemini model.
         """
         prompt = build_prompt(kb_data, incident)
         logger.debug(
@@ -48,7 +48,7 @@ class GeminiService:
                 config=types.GenerateContentConfig(
                     temperature=0,
                     response_mime_type="application/json",
-                    response_schema=DecisionPayload,
+                    response_schema=IncidentDecision,
                 ),
             )
 
@@ -57,12 +57,12 @@ class GeminiService:
                     "Gemini returned empty response for incident %s",
                     incident.number,
                 )
-                return DecisionPayload(
+                return IncidentDecision(
                     decision="escalate",
                     message="The incident requires manual review because automated triage was unavailable.",
                 )
 
-            parsed = DecisionPayload.model_validate_json(response.text)
+            parsed = IncidentDecision.model_validate_json(response.text)
 
         except Exception as exc:
             logger.exception(
@@ -70,7 +70,7 @@ class GeminiService:
                 incident.number,
             )
 
-            return DecisionPayload(
+            return IncidentDecision(
                 decision="escalate",
                 message="The incident requires manual review because automated triage was unavailable.",
             )
